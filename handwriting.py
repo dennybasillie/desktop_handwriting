@@ -48,7 +48,6 @@ class HandWriting(Frame):
         self.c.pack(fill='both', expand=True) 
 
         # Bind events
-        self.c.bind('<Button-1>', self.paint)
         self.c.bind('<B1-Motion>', self.paint)
         self.c.bind('<ButtonRelease-1>', self.reset)
         self.c.bind('<Return>', self.submit)
@@ -75,7 +74,7 @@ class HandWriting(Frame):
     def resize(self, event):
         self.recognizer.change_area({ 'width': event.width, 'height': event.height })
 
-    def paint(self, event):
+    def paint(self, event):        
         if self.prev_positions['x'] and self.prev_positions['y']:
             self.c.create_line(self.prev_positions['x'], self.prev_positions['y'], event.x, event.y,
                                width=self.line_width, fill=self.color,
@@ -85,8 +84,13 @@ class HandWriting(Frame):
         self.strokes['y'].append(event.y)
 
     def reset(self, event):
+        # is a single click
+        if not self.prev_positions['x'] and not self.prev_positions['y']:
+            half_width = int(self.line_width) / 2
+            self.c.create_oval(event.x - half_width, event.y - half_width, event.x + half_width, event.y + half_width, fill=self.color)
+            self.strokes['x'].append(event.x)
+            self.strokes['y'].append(event.y)
         self.prev_positions = { 'x': None, 'y': None }
-        #TODO: check if is dot / contain element
         self.recognizer.add_stroke([self.strokes['x'], self.strokes['y']])
         self.strokes['x'] = []
         self.strokes['y'] = []
