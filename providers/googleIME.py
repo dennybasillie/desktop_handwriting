@@ -3,11 +3,11 @@ import json
 
 class GoogleIMERecognizer():
 
-    URL = 'https://www.google.com.tw/inputtools/request?ime=handwriting&app=mobilesearch&cs=1&oe=UTF-8'
-
+    URL = 'https://inputtools.google.com/request?itc=en-t-i0-handwrit&app=translate'
+    
     def __init__(self, config):
         self.traces = []
-        self.writing_area = [config['width'], config['height']]
+        self.writing_area = { 'width': config['width'], 'height': config['height'] }
         self.language = config['language']
 
     def add_stroke(self, strokes):
@@ -18,8 +18,8 @@ class GoogleIMERecognizer():
             'options': 'enable_pre_space',
             'requests': [{
                 'writing_guide': {
-                    'writing_area_width': self.writing_area[0],
-                    'writing_area_height': self.writing_area[1]
+                    'writing_area_width': self.writing_area['width'],
+                    'writing_area_height': self.writing_area['height']
                 },
                 'ink': self.traces,
                 'language': self.language
@@ -34,7 +34,7 @@ class GoogleIMERecognizer():
     def change_language(self, language):
         self.language = language
 
-    def change_size(self, writing_area):
+    def change_area(self, writing_area):
         self.writing_area = writing_area
 
     def clear(self):

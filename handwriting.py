@@ -8,39 +8,54 @@ class HandWriting(Frame):
     DEFAULT_COLOR = 'black'
     SUPPORTED_LANGUAGES = ['en', 'ja', 'ko', 'zh_CN', 'zh_TW']
 
-    def __init__(self, root):
-        self.root = root
+    def __init__(self):
+        super().__init__()
 
         self.init_UI()
         self.init_state()
 
     def init_UI(self):
-        self.root.title('Handwriting')
+        self.master.title('Handwriting')
+
+        # Menubar
+        menubar = Menu(self.master)
+        self.menu_file =  Menu(self.master, tearoff=0)
+        self.menu_file.add_command(label="Exit", command=self.exit)
+        menubar.add_cascade(label='File', menu=self.menu_file)
+
+        # Toolbar
+        toolbar = Frame(self.master, bd=1, relief=RAISED)
 
         # Detection result
-        self.text_sentence = Text(self.root, height=1, width=30)
-        self.text_sentence.grid(row=0, column=0)
+        self.text_sentence = Text(toolbar, height=1, width=30)
+        self.text_sentence.pack(side=LEFT, padx=2, pady=2)
         # Submit current handwriting
-        self.button_submit = Button(self.root, text='Submit', command=self.submit)
-        self.button_submit.grid(row=0, column=1)
+        self.button_submit = Button(toolbar, text='Submit', command=self.submit)
+        self.button_submit.pack(side=LEFT, padx=2, pady=2)
         # Change pen size
-        self.scale_pen_size = Scale(self.root, from_=1, to=10, orient=HORIZONTAL, command=self.change_pen_size)
+        self.scale_pen_size = Scale(toolbar, from_=1, to=10, orient=HORIZONTAL, command=self.change_pen_size)
         self.scale_pen_size.set(self.DEFAULT_PEN_SIZE)
-        self.scale_pen_size.grid(row=0, column=2)
+        self.scale_pen_size.pack(side=LEFT, padx=2, pady=2)
         # Change language
-        self.language = StringVar(self.root)
+        self.language = StringVar(self.master)
         self.language.set(self.SUPPORTED_LANGUAGES[0])
-        self.option_language = OptionMenu(self.root, self.language, *self.SUPPORTED_LANGUAGES, command=self.change_language)
-        self.option_language.grid(row=0, column=3)
+        self.option_language = OptionMenu(toolbar, self.language, *self.SUPPORTED_LANGUAGES, command=self.change_language)
+        self.option_language.pack(side=LEFT, padx=2, pady=2)
+        toolbar.pack(side=TOP, fill=X)
+
         # Writing canvas
-        self.c = Canvas(self.root, bg='white', width=640, height=360)
-        self.c.grid(row=1, columnspan=4)  # self.c.pack(fill='both',expand=True) 
+        self.c = Canvas(self.master, bg='white', width=640, height=360)
+        self.c.pack(fill='both', expand=True) 
 
         # Bind events
+        self.c.bind('<Button-1>', self.paint)
         self.c.bind('<B1-Motion>', self.paint)
         self.c.bind('<ButtonRelease-1>', self.reset)
         self.c.bind('<Return>', self.submit)
+        self.c.bind('<Configure>', self.resize)
+
         self.c.focus_force()
+        self.master.config(menu=menubar)
 
     def init_state(self):
         self.prev_positions = { 'x': None, 'y': None }
@@ -56,6 +71,9 @@ class HandWriting(Frame):
 
     def change_language(self, event):
         self.recognizer.change_language(event)
+
+    def resize(self, event):
+        self.recognizer.change_area({ 'width': event.width, 'height': event.height })
 
     def paint(self, event):
         if self.prev_positions['x'] and self.prev_positions['y']:
@@ -78,12 +96,14 @@ class HandWriting(Frame):
         #TODO: popup window for selection
         self.text_sentence.insert(END, result[0])
         self.c.delete("all")
-        
 
+    def exit(self):
+        self.quit()
+        
 
 def main():
     root = Tk()
-    gui = HandWriting(root)
+    gui = HandWriting()
     root.mainloop()
 
 
