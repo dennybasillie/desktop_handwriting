@@ -10,10 +10,16 @@ class GoogleIMERecognizer():
         self.writing_area = { 'width': config['width'], 'height': config['height'] }
         self.language = config['language']
 
-    def add_stroke(self, strokes):
-        self.traces.append(strokes)
+    def add_stroke(self, strokes, append = True):
+        if append:
+            self.traces.append(strokes)
+        else:
+            self.traces.extend(strokes)
 
     def detect(self):
+        if len(self.traces) < 1:
+            return None
+            
         data = {
             'options': 'enable_pre_space',
             'requests': [{
