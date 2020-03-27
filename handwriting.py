@@ -1,4 +1,5 @@
 import sys
+import pinyin
 from PyQt5 import uic
 from PyQt5.QtCore import Qt, QSignalMapper
 from PyQt5.QtWidgets import QMainWindow, QApplication, QActionGroup
@@ -8,6 +9,8 @@ from providers.googleIME import GoogleIMERecognizer
 from providers.googleTranslate import GoogleTranslate
  
 class HandWriting(QMainWindow):
+    LANGUAGE_WITH_PINYIN = ["zh_CN", "zh_TW"]
+
     def __init__(self):
         super().__init__()
         uic.loadUi("handwriting.ui", self)
@@ -18,7 +21,6 @@ class HandWriting(QMainWindow):
     def setupActions(self):
         brushSizeActions = [self.action_3px, self.action_5px, self.action_7px, self.action_9px]
         languageActions = [self.action_en, self.action_ja, self.action_ko, self.action_zh_cn, self.action_zh_TW]
-
 
         brushSizeActionGroup = QActionGroup(self)
         brushSizeActionGroup.setExclusive(True) #TODO: display default value as checked
@@ -48,9 +50,14 @@ class HandWriting(QMainWindow):
         self.recognizer.change_area({ 'width': self.canvasWidget.width(), 'height': self.canvasWidget.height() })
 
     def onLanguageChanged(self, lang):
+        if lang in self.LANGUAGE_WITH_PINYIN:
+            self.rawPinyin.setVisible(True)
+        else:
+            self.rawPinyin.setVisible(False)
         self.language = lang
         self.recognizer.change_language(lang)
         self.translator.change_language({ 'source': lang, 'target': "en" })
+        self.reset()
 
     def onBrushSizeChanged(self, size):
         self.canvasWidget.setBrushSize(size)
@@ -61,12 +68,17 @@ class HandWriting(QMainWindow):
             if len(traces) > 0:
                 self.recognizer.add_stroke(traces, False)
                 result = self.recognizer.detect()
+                
                 #TODO: popup window for selection
                 self.rawText.insertPlainText(result[0])
                 self.canvasWidget.clear()
-                translated = self.translator.translate(self.rawText.toPlainText())
+
+                rawSentence = self.rawText.toPlainText()
+                translated = self.translator.translate(rawSentence)
                 self.translatedText.setPlainText(translated)
-    
+                if self.rawPinyin.isVisible():
+                    self.rawPinyin.setPlainText(pinyin.get(rawSentence, delimiter=" "))
+
     def toggleTabletMode(self):
         self.isTabletMode = self.action_tablet.isChecked()
 
@@ -76,7 +88,8 @@ class HandWriting(QMainWindow):
     def reset(self):
         self.clearCanvas()
         self.rawText.clear()
-        self.translatedText.clear()
+        self.rawPinyin.clear()
+        self.translatedText.clear()  
 
     def exit(self):
         self.close()

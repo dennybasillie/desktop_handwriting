@@ -73,6 +73,19 @@
           </property>
          </widget>
         </item>
+        <item>
+         <widget class="QPlainTextEdit" name="rawPinyin">
+          <property name="visible">
+           <bool>false</bool>
+          </property>
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
        </layout>
       </item>
       <item>
