@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QMainWindow, QApplication, QActionGroup
 from PyQt5.QtGui import QPainter, QPen, QImage
 from canvas_widget import CanvasWidget
 from providers.googleIME import GoogleIMERecognizer
+from providers.googleTranslate import GoogleTranslate
  
 class HandWriting(QMainWindow):
     def __init__(self):
@@ -31,13 +32,17 @@ class HandWriting(QMainWindow):
             languageActionGroup.addAction(action)
             action.triggered.connect(lambda ind, val = action.text(): self.onLanguageChanged(val))
 
+        self.action_tablet.triggered.connect(self.toggleTabletMode)
         self.action_clear.triggered.connect(self.clearCanvas)
+        self.action_reset.triggered.connect(self.reset)
         self.action_exit.triggered.connect(self.exit)
 
     def setupState(self):
         self.canvasWidget.setupState()
         self.language = "en"
+        self.isTabletMode = False
         self.recognizer = GoogleIMERecognizer({ 'width': self.canvasWidget.width(), 'height': self.canvasWidget.height(), 'language': self.language })
+        self.translator = GoogleTranslate({ 'source': self.language, 'target': "en" })
 
     def resizeEvent(self, event):
         self.recognizer.change_area({ 'width': self.canvasWidget.width(), 'height': self.canvasWidget.height() })
@@ -45,6 +50,7 @@ class HandWriting(QMainWindow):
     def onLanguageChanged(self, lang):
         self.language = lang
         self.recognizer.change_language(lang)
+        self.translator.change_language({ 'source': lang, 'target': "en" })
 
     def onBrushSizeChanged(self, size):
         self.canvasWidget.setBrushSize(size)
@@ -58,9 +64,19 @@ class HandWriting(QMainWindow):
                 #TODO: popup window for selection
                 self.rawText.insertPlainText(result[0])
                 self.canvasWidget.clear()
+                translated = self.translator.translate(self.rawText.toPlainText())
+                self.translatedText.setPlainText(translated)
+    
+    def toggleTabletMode(self):
+        self.isTabletMode = self.action_tablet.isChecked()
 
     def clearCanvas(self):
         self.canvasWidget.clear()
+
+    def reset(self):
+        self.clearCanvas()
+        self.rawText.clear()
+        self.translatedText.clear()
 
     def exit(self):
         self.close()

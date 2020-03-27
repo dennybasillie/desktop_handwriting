@@ -91,7 +91,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QPlainTextEdit" name="transatedText">
+         <widget class="QPlainTextEdit" name="translatedText">
           <property name="enabled">
            <bool>true</bool>
           </property>
@@ -111,7 +111,7 @@
            <bool>true</bool>
           </property>
           <property name="plainText">
-           <string>LOREM IPSUM</string>
+           <string/>
           </property>
          </widget>
         </item>
@@ -135,6 +135,7 @@
      <string>File</string>
     </property>
     <addaction name="action_clear"/>
+    <addaction name="action_reset"/>
     <addaction name="action_exit"/>
    </widget>
    <widget class="QMenu" name="menuBrush">
@@ -167,6 +168,7 @@
      <addaction name="action_zh_TW"/>
     </widget>
     <addaction name="menuLanguage"/>
+    <addaction name="action_tablet"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuBrush"/>
@@ -174,7 +176,7 @@
   </widget>
   <action name="action_clear">
    <property name="text">
-    <string>Clear</string>
+    <string>Clear Canvas</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+C</string>
@@ -276,6 +278,22 @@
    </property>
    <property name="text">
     <string>zh_TW</string>
+   </property>
+  </action>
+  <action name="action_tablet">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Tablet Mode</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+T</string>
+   </property>
+  </action>
+  <action name="action_reset">
+   <property name="text">
+    <string>Reset</string>
    </property>
   </action>
  </widget>
