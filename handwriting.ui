@@ -48,17 +48,31 @@
       <item>
        <layout class="QVBoxLayout" name="rawLayout">
         <item>
-         <widget class="QLabel" name="rawLabel">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>Output</string>
-          </property>
-         </widget>
+         <layout class="QHBoxLayout" name="rawHeader" stretch="1,1,3">
+          <item>
+           <widget class="QLabel" name="rawLabel">
+            <property name="text">
+             <string>Output</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="rawComboBox"/>
+          </item>
+          <item>
+           <spacer name="rawSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
         </item>
         <item>
          <widget class="QPlainTextEdit" name="rawText">
@@ -69,17 +83,17 @@
            </size>
           </property>
           <property name="readOnly">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QPlainTextEdit" name="rawPinyin">
-          <property name="visible">
-           <bool>false</bool>
-          </property>
           <property name="enabled">
            <bool>true</bool>
+          </property>
+          <property name="visible">
+           <bool>false</bool>
           </property>
           <property name="readOnly">
            <bool>true</bool>
@@ -89,19 +103,33 @@
        </layout>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="translatedLayout">
+       <layout class="QVBoxLayout" name="translatedLayout" stretch="0,0">
         <item>
-         <widget class="QLabel" name="translatedLabel">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>Translated</string>
-          </property>
-         </widget>
+         <layout class="QHBoxLayout" name="translatedHeader" stretch="1,1,3">
+          <item>
+           <widget class="QLabel" name="translatedLabel">
+            <property name="text">
+             <string>Translated</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="translatedComboBox"/>
+          </item>
+          <item>
+           <spacer name="translatedSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
         </item>
         <item>
          <widget class="QPlainTextEdit" name="translatedText">
@@ -170,18 +198,8 @@
     <property name="title">
      <string>Settings</string>
     </property>
-    <widget class="QMenu" name="menuLanguage">
-     <property name="title">
-      <string>Language</string>
-     </property>
-     <addaction name="action_en"/>
-     <addaction name="action_ja"/>
-     <addaction name="action_ko"/>
-     <addaction name="action_zh_cn"/>
-     <addaction name="action_zh_TW"/>
-    </widget>
-    <addaction name="menuLanguage"/>
     <addaction name="action_tablet"/>
+    <addaction name="action_fullscreen"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuBrush"/>
@@ -307,6 +325,17 @@
   <action name="action_reset">
    <property name="text">
     <string>Reset</string>
+   </property>
+  </action>
+  <action name="action_fullscreen">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Fullscreen</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
    </property>
   </action>
  </widget>
